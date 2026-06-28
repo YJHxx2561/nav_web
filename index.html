@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SunPanel - 网站导航</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
+    <style>
+        body {
+            background-color: #1a1a2e;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(15, 15, 35, 0) 0%, rgba(26, 26, 46, 0) 50%, rgba(22, 33, 62, 0) 100%);
+            z-index: -1;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+        }
+        
+        .site-card {
+            background: rgba(42, 42, 42, 0.43);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .site-card:hover {
+            transform: translateY(-2px);
+            background: rgba(42, 42, 42, 0.6);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            opacity: 0.3;
+        }
+        
+        .category-title {
+            position: relative;
+            padding-left: 16px;
+        }
+        
+        .category-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #fbbf24, #f59e0b);
+            border-radius: 2px;
+        }
+        
+        .search-bar {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(251, 191, 36, 0.4);
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+        }
+        
+        .header-glow {
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .spin-animation {
+            animation: spin 1s linear infinite;
+        }
+        
+        .loading-indicator {
+            opacity: 0.7;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .floating-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <div id="pageContent" class="container mx-auto px-4 py-8 transition-opacity duration-500">
+        <header class="mb-8">
+            <!-- 时间和日期 - 居中显示 -->
+            <div class="text-center mb-6">
+                <div id="currentTime" class="text-4xl font-bold text-white mb-1"></div>
+                <div id="currentDate" class="text-lg text-gray-300 mb-1"></div>
+                <div id="lunarDate" class="text-lg text-gray-400"></div>
+            </div>
+            
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center floating-icon">
+                        <iconify-icon icon="noto:sun" width="24" height="24" class="text-white"></iconify-icon>
+                    </div>
+                    <h1 class="text-2xl font-bold header-glow">SunPanel</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button id="refreshBg" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm text-gray-300" title="切换背景">
+                        <iconify-icon icon="material-symbols:refresh" width="16" height="16"></iconify-icon>
+                        <span class="hidden sm:inline">换背景</span>
+                    </button>
+                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                        <iconify-icon icon="noto:desktop-computer" id="deviceIcon" width="16" height="16"></iconify-icon>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative max-w-2xl z-[100]">
+                <div class="absolute left-4 top-1/2 -translate-y-1/2">
+                    <button id="searchEngineBtn" class="text-gray-400 hover:text-white transition-colors">
+                        <iconify-icon icon="noto:magnifying-glass-tilted-left" id="searchEngineIcon" width="20" height="20"></iconify-icon>
+                    </button>
+                    <div id="searchDropdown" class="hidden absolute left-0 top-full mt-2 bg-gray-800 rounded-lg shadow-lg border border-gray-700 py-2 min-w-[120px] z-[9999]">
+                        <button data-engine="bing" class="search-engine-option w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2">
+                            <iconify-icon icon="logos:bing" width="16" height="16"></iconify-icon> Bing
+                        </button>
+                        <button data-engine="google" class="search-engine-option w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2">
+                            <iconify-icon icon="devicon:google" width="16" height="16"></iconify-icon> Google
+                        </button>
+                        <button data-engine="baidu" class="search-engine-option w-full px-4 py-2 text-left text-gray-300 hover:bg-gray-700 hover:text-white flex items-center gap-2">
+                            <iconify-icon icon="ri:baidu-fill" width="16" height="16"></iconify-icon> Baidu
+                        </button>
+                    </div>
+                </div>
+                <input type="text" id="searchInput" placeholder="按回车搜索..." 
+                       class="search-bar w-full pl-12 pr-12 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none">
+                <button id="searchBtn" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white">
+                    <iconify-icon icon="glyphs-poly:arrow-solid" width="20" height="20"></iconify-icon>
+                </button>
+            </div>
+        </header>
+
+        <main id="mainContent">
+            <!-- 网站内容将通过 JavaScript 动态生成 -->
+        </main>
+
+        <script>
+            // 网站数据配置
+            const siteData = {
+                "常用": [
+                    { title: "Google", url: "https://www.google.com/", icon: "devicon:google", desc: "" },
+                    { title: "Gemini", url: "https://gemini.google.com/app", icon: "vscode-icons:file-type-gemini", desc: "" },
+                    { title: "豆包", url: "https://www.doubao.com/chat/", icon: "tdesign:ai", desc: "" },
+                    { title: "Kimi", url: "https://www.kimi.com/", icon: "hugeicons:kimi-ai", desc: "" },
+                    { title: "Deepseek", url: "https://chat.deepseek.com/", icon: "logos:deepseek-icon", desc: "" },
+                    { title: "TikTok", url: "https://www.tiktok.com/", icon: "ic:baseline-tiktok", desc: "" },
+                    { title: "抖音", url: "https://www.douyin.com/?recommend=1", icon: "logos:tiktok-icon", desc: "" },
+                    { title: "哔哩哔哩", url: "https://www.bilibili.com/", icon: "ant-design:bilibili-filled", desc: "" },
+                    { title: "Youtube", url: "https://www.youtube.com/", icon: "logos:youtube-icon", desc: "" },
+                    { title: "Gmail", url: "https://mail.google.com/mail/u/0/#inbox", icon: "logos:google-gmail", desc: "" },
+                    { title: "QQ邮箱", url: "https://wx.mail.qq.com/", icon: "fluent-color:mail-48", desc: "" },
+                    { title: "Outlook", url: "https://outlook.office.com/", icon: "fluent-color:mail-48", desc: "" },
+                    { title: "Lark邮箱", url: "https://gjpxlsii7pct.jp.larksuite.com/mail", icon: "fluent-color:mail-48", desc: "" },
+                    { title: "swjtu邮箱", url: "https://mail.swjtu.edu.cn/cmcuapi/sso/cas", icon: "pajamas:mail", desc: "" },
+                    { title: "Cloudflare", url: "https://dash.cloudflare.com/", icon: "logos:cloudflare-icon", desc: "" },
+                    { title: "github", url: "https://github.com/", icon: "ri:github-fill", desc: "" },
+                    { title: "MOOC", url: "https://www.icourse163.org/", icon: "arcticons:china-university-mooc", desc: "" },
+                    { title: "学习通", url: "https://i.chaoxing.com/", icon: "noto:books", desc: "" },
+                    { title: "教务处", url: "https://jwc.swjtu.edu.cn/index.html?version=2020", icon: "material-symbols:school", desc: "" },
+                    { title: "扬华素质网", url: "https://xg.swjtu.edu.cn/web", icon: "uil:university", desc: "" },
+                    { title: "土木学院", url: "https://civil.swjtu.edu.cn/tzgg.htm", icon: "mdi:construction", desc: "" }
+                ],
+                "工具": [
+                    { title: "在线工具箱", url: "https://tool.lu/", icon: "fluent-emoji:toolbox", desc: "" },
+                    { title: "菜鸟工具", url: "https://c.runoob.com/", icon: "simple-icons:runno", desc: "" },
+                    { title: "JSON格式化", url: "https://www.json.cn/", icon: "mdi:code-json", desc: "" },
+                    { title: "正则测试", url: "https://regex101.com/", icon: "mdi:regex", desc: "" },
+                    { title: "时间戳转换", url: "https://tool.lu/timestamp/", icon: "mdi:clock-outline", desc: "" },
+                    { title: "Base64编解码", url: "https://base64.us/", icon: "mdi:code-tags", desc: "" },
+                    { title: "二维码生成", url: "https://cli.im/", icon: "mdi:qrcode", desc: "" },
+                    { title: "图片压缩", url: "https://tinypng.com/", icon: "mdi:image-size-select-large", desc: "" },
+                    { title: "PDF转换", url: "https://www.ilovepdf.com/", icon: "mdi:file-pdf-box", desc: "" },
+                    { title: "短链生成", url: "https://dwz.cn/", icon: "mdi:link-variant", desc: "" }
+                ],
+                "服务": [
+                    { title: "Spaceship", url: "https://spaceship.com", icon: "stash:domain", desc: "" },
+                    { title: "核云", url: "https://www.heyunidc.cn/", icon: "mdi:server", desc: "" },
+                    { title: "云悠", url: "https://yunyoo.cc/", icon: "tabler:server", desc: "" },
+                    { title: "风尚云", url: "https://ly.stay33.com/", icon: "mingcute:server-line", desc: "" },
+                    { title: "ACCK", url: "https://acck.io/", icon: "boxicons:server-filled", desc: "" },
+                    { title: "Akile", url: "https://akile.ai/", icon: "mingcute:server-fill", desc: "" },
+                    { title: "Fuckip", url: "https://fuckip.me/", icon: "mingcute:server-line", desc: "" },
+                    { title: "ip查询", url: "https://ip.net.coffee/", icon: "mdi:ip", desc: "" },
+                    { title: "ITDog", url: "https://www.itdog.cn/", icon: "streamline-plump-color:web", desc: "" },
+                    { title: "scamalytics", url: "https://scamalytics.com/", icon: "arcticons:ip-tools", desc: "" }
+                ],
+                "视频资讯": [
+                    { title: "Google", url: "https://www.google.com/ncr", icon: "devicon:google", desc: "" },
+                    { title: "Bing", url: "https://www.bing.com/?cc=us", icon: "logos:bing", desc: "" },
+                    { title: "维基百科", url: "https://zh.wikipedia.org/", icon: "fontisto:wikipedia", desc: "" },
+                    { title: "Youtube", url: "https://www.youtube.com/", icon: "logos:youtube-icon", desc: "" },
+                    { title: "TikTok", url: "https://www.tiktok.com/", icon: "logos:tiktok-icon", desc: "" },
+                    { title: "Meta", url: "https://www.meta.com", icon: "logos:meta-icon", desc: "" },
+                    { title: "Instagram", url: "https://www.instagram.com/", icon: "skill-icons:instagram", desc: "" },
+                    { title: "BBC中文", url: "https://www.bbc.com/zhongwen/simp", icon: "cbi:bbc", desc: "" },
+                    { title: "纽约时报", url: "https://cn.nytimes.com/", icon: "tabler:brand-nytimes", desc: "" },
+                    { title: "CNN中国", url: "https://edition.cnn.com/world/china", icon: "simple-icons:cnn", desc: "" },
+                    { title: "TED", url: "https://www.ted.com", icon: "simple-icons:ted", desc: "" },
+                    { title: "Baidu", url: "https://www.baidu.com", icon: "ant-design:baidu-outlined", desc: "" },
+                    { title: "抖音", url: "https://www.douyin.com/", icon: "ic:twotone-tiktok", desc: "" },
+                    { title: "西瓜视频", url: "https://www.ixigua.com", icon: "icon-park-solid:xigua", desc: "" },
+                    { title: "知乎", url: "https://www.zhihu.com/", icon: "simple-icons:zhihu", desc: "" },
+                    { title: "Bilibili", url: "https://www.bilibili.com/", icon: "ant-design:bilibili-filled", desc: "" },
+                    { title: "豆瓣", url: "https://www.douban.com/", icon: "ri:douban-fill", desc: "" },
+                    { title: "CSDN", url: "https://blog.csdn.net/", icon: "noto-v1:file-cabinet", desc: "" },
+                    { title: "小宝影院", url: "https://xiaoxintv.cc/", icon: "material-symbols:movie", desc: "" },
+                    { title: "泥视频", url: "https://www.nivod.cc/", icon: "fluent-color:video-48", desc: "" },
+                    { title: "茶杯狐", url: "https://cupfox.love/", icon: "fluent-emoji-flat:teacup-without-handle", desc: "" }
+                ],
+                "服务应用": [
+                    { title: "谷歌翻译", url: "https://translate.google.com", icon: "marketeq:translate", desc: "" },
+                    { title: "反防火墙", url: "https://zh.greatfire.org", icon: "noto:free-button", desc: "" },
+                    { title: "Github", url: "https://github.com", icon: "mdi:github", desc: "" },
+                    { title: "GH 代理", url: "https://ghp.ci/", icon: "fa6-brands:github-alt", desc: "" },
+                    { title: "Gitee", url: "https://gitee.com/", icon: "simple-icons:gitee", desc: "" },
+                    { title: "Aliyun", url: "https://cn.aliyun.com", icon: "fluent-color:cloud-16", desc: "" },
+                    { title: "娃娃工具", url: "https://www.iamwawa.cn/", icon: "noto:toolbox", desc: "" },
+                    { title: "Tool.lu", url: "https://tool.lu", icon: "fluent-emoji:toolbox", desc: "" },
+                    { title: "Canva", url: "https://www.canva.com", icon: "devicon:canva", desc: "" },
+                    { title: "Pdf2MD", url: "https://pdf2md.morethan.io/", icon: "icon-park:file-pdf", desc: "" },
+                    { title: "Cpolar", url: "https://www.cpolar.com", icon: "icon-park:database-network-point", desc: "" },
+                    { title: "免费电视", url: "https://epg.pw/areas/cn.html?lang=zh-hans", icon: "material-symbols:tv", desc: "" },
+                    { title: "SMS-Activate", url: "https://sms-activate.io/", icon: "flat-color-icons:sms", desc: "" },
+                    { title: "WiFi Analyzer", url: "https://github.com/VREMSoftwareDevelopment/WiFiAnalyzer/releases", icon: "tabler:brand-github-filled", desc: "" }
+                ]
+            };
+
+            // 渲染网站分类
+            function renderSites() {
+                const mainContent = document.getElementById('mainContent');
+                if (!mainContent) return;
+
+                // 定义分类顺序：常用和工具放在前两位
+                const categoryOrder = ["常用", "工具", "服务","视频资讯", "服务应用"];
+
+                categoryOrder.forEach(categoryName => {
+                    const sites = siteData[categoryName];
+                    if (!sites || sites.length === 0) return;
+                    
+                    // 创建分类section
+                    const section = document.createElement('section');
+                    section.className = 'mb-8';
+                    
+                    // 创建分类标题
+                    const title = document.createElement('h2');
+                    title.className = 'category-title text-lg font-semibold mb-4 text-gray-200';
+                    title.textContent = categoryName;
+                    section.appendChild(title);
+                    
+                    // 创建网站卡片网格
+                    const grid = document.createElement('div');
+                    grid.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3';
+                    
+                    sites.forEach(site => {
+                        const card = document.createElement('a');
+                        card.href = site.url;
+                        card.target = '_blank';
+                        card.rel = 'noopener noreferrer';
+                        card.className = 'site-card p-3 flex flex-col items-center text-center group';
+                        
+                        const iconWrapper = document.createElement('div');
+                        iconWrapper.className = 'icon-wrapper bg-gray-800 mb-2 group-hover:bg-gray-700 transition-colors';
+                        
+                        if (site.icon) {
+                            const icon = document.createElement('iconify-icon');
+                            icon.setAttribute('icon', site.icon);
+                            icon.setAttribute('width', '24');
+                            icon.setAttribute('height', '24');
+                            iconWrapper.appendChild(icon);
+                        } else {
+                            const textIcon = document.createElement('span');
+                            textIcon.className = 'text-lg font-bold text-gray-400';
+                            textIcon.textContent = site.title.charAt(0).toUpperCase();
+                            iconWrapper.appendChild(textIcon);
+                        }
+                        
+                        card.appendChild(iconWrapper);
+                        
+                        const titleSpan = document.createElement('span');
+                        titleSpan.className = 'text-xs text-gray-200';
+                        titleSpan.textContent = site.title;
+                        card.appendChild(titleSpan);
+                        
+                        if (site.desc) {
+                            const descSpan = document.createElement('span');
+                            descSpan.className = 'text-xs text-gray-500 mt-1';
+                            descSpan.textContent = site.desc;
+                            card.appendChild(descSpan);
+                        }
+                        
+                        grid.appendChild(card);
+                    });
+                    
+                    section.appendChild(grid);
+                    mainContent.appendChild(section);
+                });
+            }
+
+        </script>
+
+        <footer class="mt-12 text-center text-gray-500 text-sm">
+            <p>SunPanel - 网站导航 | Made by YJH</p>
+        </footer>
+
+        <script>
+            // 背景图片加载
+            (function() {
+                var bgApi = 'https://www.dmoe.cc/random.php';
+                var timestamp = new Date().getTime();
+                document.body.style.background = 'url(' + bgApi + '?t=' + timestamp + ') center / cover fixed';
+            })();
+
+            document.addEventListener('DOMContentLoaded', function() {
+                // 渲染网站
+                renderSites();
+                
+                // 检测并显示设备类型
+                function isMobile() {
+                    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                           window.innerWidth < 768;
+                }
+
+                var deviceIcon = document.getElementById('deviceIcon');
+                if (deviceIcon && isMobile()) {
+                    deviceIcon.setAttribute('icon', 'noto:mobile-phone');
+                }
+                
+                updateTime();
+                initDate(); // 页面加载时获取一次农历日期
+                setInterval(updateTime, 1000);
+                
+                // 背景切换按钮
+                var refreshBgBtn = document.getElementById('refreshBg');
+                var bgApi = 'https://www.dmoe.cc/random.php';
+                
+                function changeBackground() {
+                    var timestamp = new Date().getTime();
+                    var url = bgApi + '?t=' + timestamp + '&r=' + Math.random();
+                    document.body.style.background = 'url(' + url + ') center / cover fixed';
+                }
+                
+                if (refreshBgBtn) {
+                    refreshBgBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        changeBackground();
+                    });
+                }
+
+                // 搜索引擎配置
+                var searchEngines = {
+                    'bing': { url: 'https://cn.bing.com/search?q=', icon: 'logos:bing' },
+                    'google': { url: 'https://www.google.com/search?q=', icon: 'logos:google' },
+                    'baidu': { url: 'https://www.baidu.com/s?wd=', icon: 'file-text' }
+                };
+                var currentEngine = 'bing';
+                
+                var searchInput = document.getElementById('searchInput');
+                var searchBtn = document.getElementById('searchBtn');
+                var searchEngineBtn = document.getElementById('searchEngineBtn');
+                var searchEngineIcon = document.getElementById('searchEngineIcon');
+                var searchDropdown = document.getElementById('searchDropdown');
+                var mainContent = document.getElementById('mainContent');
+
+                // 执行搜索
+                function doSearch() {
+                    var query = searchInput.value.trim();
+                    if (query) {
+                        var engine = searchEngines[currentEngine];
+                        window.open(engine.url + encodeURIComponent(query), '_blank');
+                    }
+                }
+
+                // 搜索按钮点击
+                if (searchBtn) {
+                    searchBtn.addEventListener('click', doSearch);
+                }
+
+                // 回车搜索
+                if (searchInput) {
+                    searchInput.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            doSearch();
+                        }
+                    });
+                }
+
+                // 切换搜索引擎下拉菜单
+                if (searchEngineBtn) {
+                    searchEngineBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        searchDropdown.classList.toggle('hidden');
+                    });
+                }
+
+                // 点击下拉菜单选项
+                document.querySelectorAll('.search-engine-option').forEach(function(btn) {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        var engine = this.getAttribute('data-engine');
+                        currentEngine = engine;
+                        searchEngineIcon.setAttribute('icon', 'logos:' + engine);
+                        searchDropdown.classList.add('hidden');
+                    });
+                });
+
+                // 点击其他地方关闭下拉菜单
+                document.addEventListener('click', function() {
+                    searchDropdown.classList.add('hidden');
+                });
+
+                // 本地网站搜索
+                if (searchInput) {
+                    searchInput.addEventListener('input', function(e) {
+                        var query = e.target.value.toLowerCase().trim();
+
+                        var sections = mainContent.querySelectorAll('section');
+                        sections.forEach(function(section) {
+                            var cards = section.querySelectorAll('a');
+                            var hasVisibleCard = false;
+
+                            cards.forEach(function(card) {
+                                var titleEl = card.querySelector('span:first-of-type');
+                                var descEl = card.querySelector('span:last-of-type');
+                                var title = titleEl ? titleEl.textContent.toLowerCase() : '';
+                                var desc = descEl ? descEl.textContent.toLowerCase() : '';
+                                
+                                if (title.includes(query) || desc.includes(query)) {
+                                    card.style.display = '';
+                                    hasVisibleCard = true;
+                                } else {
+                                    card.style.display = 'none';
+                                }
+                            });
+
+                            if (hasVisibleCard) {
+                                section.style.display = '';
+                            } else {
+                                section.style.display = 'none';
+                            }
+                        });
+                    });
+                }
+            });
+
+            // 农历日期数据 (1900-2100)
+            var lunarInfo = [
+                0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16534, 0x056a0, 0x09ad0, 0x055d2,
+                0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x0d255, 0x0b540, 0x0b6a0, 0x19550, 0x09550, 0x149a0,
+                0x054b0, 0x0a4a0, 0x0ea50, 0x06a50, 0x05630, 0x0d3a0, 0x05350, 0x053e0, 0x05b50, 0x06a95,
+                0x06a00, 0x0ab60, 0x09570, 0x04af5, 0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x0afa0,
+                0x05b50, 0x056b0, 0x04b50, 0x0a570, 0x0a4b0, 0x0aa50, 0x0b5a0, 0x0d2b0, 0x0d950, 0x05550,
+                0x04b50, 0x0a5a0, 0x0a760, 0x09b60, 0x09550, 0x04970, 0x0a4a0, 0x0b4a0, 0x0bea0, 0x0cd70,
+                0x0afb0, 0x0ab50, 0x0b550, 0x056a0, 0x05550, 0x0d3a0, 0x04b50, 0x0a570, 0x0a4d0, 0x0d250,
+                0x0d550, 0x04550, 0x0a5b0, 0x0a4b0, 0x0aa50, 0x0b550, 0x0b2a0, 0x06a50, 0x06d40, 0x0ada0,
+                0x14b63, 0x09550, 0x04950, 0x04bd0, 0x0a4b0, 0x0be50, 0x0c560, 0x05d50, 0x0ada0, 0x15b57,
+                0x04bd0, 0x04b00, 0x0a4b0, 0x0afb0, 0x096b0, 0x04ae0, 0x0a4d0, 0x0a570, 0x0a4b0, 0x0aa50,
+                0x0b550, 0x056a0, 0x05b50, 0x04b50, 0x0a570, 0x0a4a0, 0x0ea50, 0x06a50, 0x06d40, 0x0ada0,
+                0x04ae0, 0x0a5b0, 0x0a4d0, 0x0d260, 0x0d950, 0x0d2a0, 0x0d550, 0x05550, 0x0d3a0, 0x053e0,
+                0x05b50, 0x04b50, 0x0a5a0, 0x0a760, 0x0a750, 0x09550, 0x054b0, 0x05ad0, 0x04bd0, 0x04ae0,
+                0x0a570, 0x056d0, 0x04ea0, 0x04b50, 0x0a5b0, 0x0a4d0, 0x0d250, 0x0d550, 0x04550, 0x0a5b0,
+                0x0a4b0, 0x0aa50, 0x0b550, 0x056a0, 0x05b50, 0x04b50, 0x0a570, 0x0a4a0, 0x0ea50, 0x06a50,
+                0x06d40, 0x0ada0, 0x04ae0, 0x0a5b0, 0x0a4d0, 0x0d260, 0x0d950, 0x0d2a0, 0x0d550, 0x05550,
+                0x0d3a0, 0x053e0, 0x05b50, 0x04b50, 0x0a5a0, 0x0a760, 0x0a750, 0x09550, 0x054b0, 0x05ad0,
+                0x04bd0, 0x04ae0, 0x0a570, 0x056d0, 0x04ea0, 0x04b50, 0x0a5b0, 0x0a4d0, 0x0d250, 0x0d550,
+                0x04550, 0x0a5b0, 0x0a4b0, 0x0aa50, 0x0b550, 0x056a0, 0x05b50, 0x04b50, 0x0a570, 0x0a4a0,
+                0x0ea50, 0x06a50, 0x06d40, 0x0ada0, 0x04ae0, 0x0a5b0, 0x0a4d0, 0x0d260, 0x0d950, 0x0d2a0,
+                0x0d550, 0x05550, 0x0d3a0, 0x053e0, 0x05b50, 0x04b50, 0x0a5a0, 0x0a760, 0x0a750, 0x09550,
+                0x054b0, 0x05ad0, 0x04bd0, 0x04ae0, 0x0a570, 0x056d0, 0x04ea0, 0x04b50, 0x0a5b0, 0x0a4d0,
+                0x0d250, 0x0d550, 0x04550, 0x0a5b0, 0x0a4b0, 0x0aa50, 0x0b550, 0x056a0, 0x05b50, 0x04b50,
+                0x0a570, 0x0a4a0, 0x0ea50, 0x06a50, 0x06d40, 0x0ada0, 0x04ae0, 0x0a5b0, 0x0a4d0, 0x0d260,
+                0x0d950, 0x0d2a0, 0x0d550, 0x05550, 0x0d3a0, 0x053e0, 0x05b50, 0x04b50, 0x0a5a0, 0x0a760
+            ];
+            
+            var lunarMonth = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '冬', '腊'];
+            var lunarDay = ['初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十', 
+                '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十', 
+                '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'];
+            var Gan = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+            var Zhi = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+            
+            function lunarYear(y) {
+                return y - Math.floor(y / 4) + Math.floor(y / 400) - Math.floor((y - 1) / 100);
+            }
+            
+            function lunarYearDays(year) {
+                var sum = 348;
+                var info = lunarInfo[year - 1900];
+                for (var i = 0x8000; i > 0x10; i >>= 1) {
+                    sum += (info & i) ? 1 : 0;
+                }
+                return sum + leapDays(year);
+            }
+            
+            function leapDays(year) {
+                if (leapMonth(year)) {
+                    var info = lunarInfo[year - 1900];
+                    return (info & 0x10000) ? 30 : 29;
+                }
+                return 0;
+            }
+            
+            function leapMonth(year) {
+                var info = lunarInfo[year - 1900];
+                return (info & 0xf);
+            }
+            
+            function lunarMonthDays(year, month) {
+                if ((leapMonth(year) + 1) < month) {
+                    return 30;
+                }
+                var info = lunarInfo[year - 1900];
+                return (info & (0x10000 >> month)) ? 30 : 29;
+            }
+            
+            function getLunarDate() {
+                var now = new Date();
+                var year = now.getFullYear();
+                var month = now.getMonth() + 1;
+                var day = now.getDate();
+                
+                var offset = (Date.UTC(year, month - 1, day) - Date.UTC(1900, 0, 31)) / 86400000;
+                var i = 1900, leapMonthValue = 0, isLeap = false;
+                
+                for (; i < 2100 && offset > 0; i++) {
+                    var days = lunarYearDays(i);
+                    offset -= days;
+                }
+                if (offset < 0) {
+                    offset += days;
+                    i--;
+                }
+                
+                var isLeap = (leapMonth(i) > 0);
+                var month = 1;
+                for (; month < 13 && offset > 0; month++) {
+                    if (isLeap && month === (leapMonth(i) + 1)) {
+                        isLeap = false;
+                        var days = leapDays(i);
+                        if (offset < days) {
+                            return { year: i, month: month, day: offset + 1, isLeap: true };
+                        }
+                        offset -= days;
+                    }
+                    var days = lunarMonthDays(i, month);
+                    if (offset < days) break;
+                    offset -= days;
+                }
+                return { year: i, month: month, day: offset + 1, isLeap: false };
+            }
+            
+            // 页面加载时获取一次农历日期和节气
+            function initDate() {
+                var now = new Date();
+                var year = now.getFullYear();
+                var month = (now.getMonth() + 1).toString().padStart(2, '0');
+                var day = now.getDate().toString().padStart(2, '0');
+                var dateStr = year + '年' + month + '月' + day + '日';
+                
+                // 获取星期
+                var weekDays = ['日', '一', '二', '三', '四', '五', '六'];
+                var weekDay = weekDays[now.getDay()];
+                
+                // 显示第二行：年月日及星期（初始不显示节日）
+                var dateEl = document.getElementById('currentDate');
+                if (dateEl) {
+                    dateEl.textContent = dateStr + ' 星期' + weekDay;
+                }
+                
+                // 获取农历日期、节气和节日
+                fetchLunarDate();
+            }
+            
+            function updateTime() {
+                var now = new Date();
+                
+                // 第一行：当前时间 时:分:秒
+                var hours = now.getHours().toString().padStart(2, '0');
+                var minutes = now.getMinutes().toString().padStart(2, '0');
+                var seconds = now.getSeconds().toString().padStart(2, '0');
+                var timeEl = document.getElementById('currentTime');
+                if (timeEl) {
+                    timeEl.textContent = hours + ':' + minutes + ':' + seconds;
+                }
+            }
+            
+            // 从网络获取农历日期、节气和节日
+            function fetchLunarDate() {
+                var dateEl = document.getElementById('currentDate');
+                var lunarEl = document.getElementById('lunarDate');
+                if (!dateEl || !lunarEl) return;
+                
+                // 先显示加载中
+                lunarEl.textContent = '农历信息加载中...';
+                
+                // 使用API获取农历日期、节气和节日
+                fetch('https://cn.apihz.cn/api/time/getday.php?id=88888888&key=88888888')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.code === 200) {
+                            // 更新第二行：添加节日（如果有）
+                            var weekDay = dateEl.textContent;
+                            // 尝试从jieri或YIFESTIVAL获取节日信息
+                            var festivalText = '';
+                            if (data.jieri && data.jieri.trim() !== '') {
+                                festivalText = data.jieri.split('|').join('、');
+                            } else if (data.YIFESTIVAL && data.YIFESTIVAL.trim() !== '') {
+                                festivalText = data.YIFESTIVAL;
+                            }
+                            if (festivalText) {
+                                dateEl.textContent = weekDay + ' · ' + festivalText;
+                            }
+                            
+                            // 第三行：显示农历和节气
+                            var lunarStr = '农历' + data.nyue + data.nri;
+                            var jieqiStr = data.jieqimsg || '';
+                            lunarEl.textContent = lunarStr + ' ' + jieqiStr;
+                        } else {
+                            lunarEl.textContent = '农历信息获取失败';
+                        }
+                    })
+                    .catch(function() {
+                        lunarEl.textContent = '农历信息获取失败';
+                    });
+            }
+            
+            // 自动隐藏页面元素定时器
+            var idleTimer = null;
+            var isHidden = false;
+            var pageContent = document.getElementById('pageContent');
+            
+            function resetIdleTimer() {
+                if (isHidden) {
+                    // 如果已隐藏，恢复显示
+                    pageContent.style.opacity = '1';
+                    isHidden = false;
+                }
+                // 清除现有定时器
+                if (idleTimer) {
+                    clearTimeout(idleTimer);
+                }
+                // 30秒无操作后开始淡出
+                idleTimer = setTimeout(function() {
+                    fadeOutPage();
+                }, 30000);
+            }
+            
+            function fadeOutPage() {
+                var opacity = 1;
+                var interval = setInterval(function() {
+                    opacity -= 0.05;
+                    if (opacity <= 0) {
+                        opacity = 0;
+                        clearInterval(interval);
+                        isHidden = true;
+                    }
+                    pageContent.style.opacity = opacity;
+                }, 100); // 每100ms降低5%，约5秒完成
+            }
+            
+            // 监听用户活动
+            var events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'];
+            events.forEach(function(event) {
+                document.addEventListener(event, resetIdleTimer, { passive: true });
+            });
+            
+            // 初始化定时器
+            resetIdleTimer();
+        </script>
+    </div>
+</body>
+</html>
