@@ -24,7 +24,7 @@
 | Cloudflare Pages | [![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/YOUR_USERNAME/YOUR_REPO) |
 | GitHub Pages | [![Deploy to GitHub Pages](https://img.shields.io/badge/Deploy_to-GitHub_Pages-2088FF?style=for-the-badge&logo=github)](https://github.com/YOUR_USERNAME/YOUR_REPO/fork) |
 | EdgeOne Pages | [![Deploy to EdgeOne Pages](https://img.shields.io/badge/Deploy_to-EdgeOne_Pages-00C389?style=for-the-badge&logo=cloudflare)](https://edgeone.ai/pages/new) |
-| ESA Pages | [![Deploy to ESA Pages](https://img.shields.io/badge/Deploy_to-ESA_Pages-FF6A00?style=for-the-badge&logo=huawei)](https://console.huaweicloud.com/esa) |
+| ESA Pages | [![Deploy to ESA Pages](https://img.shields.io/badge/Deploy_to-ESA_Pages-FF6A00?style=for-the-badge&logo=alibabacloud)](https://esa.console.aliyun.com/) |
 
 > **注意**: 请将上方链接中的 `YOUR_USERNAME/YOUR_REPO` 替换为你的 GitHub 用户名和仓库名。
 
@@ -118,9 +118,9 @@ jobs:
 
 ---
 
-### 部署到 ESA Pages（华为云边缘安全加速）
+### 部署到 ESA Pages（阿里云边缘安全加速）
 
-1. 登录 [华为云 ESA 控制台](https://console.huaweicloud.com/esa)
+1. 登录 [阿里云 ESA 控制台](https://esa.console.aliyun.com/)
 2. 创建站点，选择 **静态站点** 类型
 3. 连接 Git 仓库或直接上传文件
 4. 配置构建设置：

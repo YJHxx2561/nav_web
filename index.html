@@ -6,6 +6,7 @@
     <title>SunPanel - 网站导航</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
+    <script src="sites.js"></script>
     <style>
         body {
             background-color: #1a1a2e;
@@ -134,6 +135,10 @@
                     <h1 class="text-2xl font-bold header-glow">SunPanel</h1>
                 </div>
                 <div class="flex items-center gap-3">
+                    <button id="settingsBtn" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm text-gray-300" title="设置">
+                        <iconify-icon icon="material-symbols:settings" width="16" height="16"></iconify-icon>
+                        <span class="hidden sm:inline">设置</span>
+                    </button>
                     <button id="refreshBg" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm text-gray-300" title="切换背景">
                         <iconify-icon icon="material-symbols:refresh" width="16" height="16"></iconify-icon>
                         <span class="hidden sm:inline">换背景</span>
@@ -169,108 +174,110 @@
             </div>
         </header>
 
+        <!-- 设置面板 -->
+        <div id="settingsPanel" class="hidden fixed top-0 right-0 w-80 max-w-full h-full bg-gray-900/95 backdrop-blur-lg border-l border-gray-700 z-[9999] transition-transform duration-300 overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-white">显示设置</h2>
+                    <button id="closeSettings" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors">
+                        <iconify-icon icon="material-symbols:close" width="20" height="20" class="text-gray-300"></iconify-icon>
+                    </button>
+                </div>
+                
+                <!-- 图标大小设置 -->
+                <div class="mb-6">
+                    <label class="block text-sm text-gray-300 mb-3">图标大小</label>
+                    <div class="flex gap-2">
+                        <button data-size="small" class="size-btn flex-1 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm text-gray-300 border border-transparent">
+                            小
+                        </button>
+                        <button data-size="medium" class="size-btn flex-1 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm text-gray-300 border border-transparent">
+                            中
+                        </button>
+                        <button data-size="large" class="size-btn flex-1 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm text-gray-300 border border-transparent">
+                            大
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 显示图标设置 -->
+                <div class="mb-6">
+                    <label class="block text-sm text-gray-300 mb-3">显示图标</label>
+                    <div class="flex gap-2">
+                        <button data-showicon="true" class="icon-btn flex-1 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm text-gray-300 border border-transparent">
+                            显示
+                        </button>
+                        <button data-showicon="false" class="icon-btn flex-1 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm text-gray-300 border border-transparent">
+                            隐藏
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 卡片样式设置 -->
+                <div class="mb-6">
+                    <label class="block text-sm text-gray-300 mb-3">卡片样式</label>
+                    <div class="flex gap-2">
+                        <button data-style="card" class="style-btn flex-1 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm text-gray-300 border border-transparent">
+                            卡片
+                        </button>
+                        <button data-style="list" class="style-btn flex-1 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors text-sm text-gray-300 border border-transparent">
+                            列表
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 重置设置 -->
+                <div class="mt-8 pt-6 border-t border-gray-700">
+                    <button id="resetSettings" class="w-full py-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 transition-colors text-sm text-red-400">
+                        重置为默认设置
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <main id="mainContent">
             <!-- 网站内容将通过 JavaScript 动态生成 -->
         </main>
 
         <script>
-            // 网站数据配置
-            const siteData = {
-                "常用": [
-                    { title: "Google", url: "https://www.google.com/", icon: "devicon:google", desc: "" },
-                    { title: "Gemini", url: "https://gemini.google.com/app", icon: "vscode-icons:file-type-gemini", desc: "" },
-                    { title: "豆包", url: "https://www.doubao.com/chat/", icon: "tdesign:ai", desc: "" },
-                    { title: "Kimi", url: "https://www.kimi.com/", icon: "hugeicons:kimi-ai", desc: "" },
-                    { title: "Deepseek", url: "https://chat.deepseek.com/", icon: "logos:deepseek-icon", desc: "" },
-                    { title: "TikTok", url: "https://www.tiktok.com/", icon: "ic:baseline-tiktok", desc: "" },
-                    { title: "抖音", url: "https://www.douyin.com/?recommend=1", icon: "logos:tiktok-icon", desc: "" },
-                    { title: "哔哩哔哩", url: "https://www.bilibili.com/", icon: "ant-design:bilibili-filled", desc: "" },
-                    { title: "Youtube", url: "https://www.youtube.com/", icon: "logos:youtube-icon", desc: "" },
-                    { title: "Gmail", url: "https://mail.google.com/mail/u/0/#inbox", icon: "logos:google-gmail", desc: "" },
-                    { title: "QQ邮箱", url: "https://wx.mail.qq.com/", icon: "fluent-color:mail-48", desc: "" },
-                    { title: "Outlook", url: "https://outlook.office.com/", icon: "fluent-color:mail-48", desc: "" },
-                    { title: "Lark邮箱", url: "https://gjpxlsii7pct.jp.larksuite.com/mail", icon: "fluent-color:mail-48", desc: "" },
-                    { title: "swjtu邮箱", url: "https://mail.swjtu.edu.cn/cmcuapi/sso/cas", icon: "pajamas:mail", desc: "" },
-                    { title: "Cloudflare", url: "https://dash.cloudflare.com/", icon: "logos:cloudflare-icon", desc: "" },
-                    { title: "github", url: "https://github.com/", icon: "ri:github-fill", desc: "" },
-                    { title: "MOOC", url: "https://www.icourse163.org/", icon: "arcticons:china-university-mooc", desc: "" },
-                    { title: "学习通", url: "https://i.chaoxing.com/", icon: "noto:books", desc: "" },
-                    { title: "教务处", url: "https://jwc.swjtu.edu.cn/index.html?version=2020", icon: "material-symbols:school", desc: "" },
-                    { title: "扬华素质网", url: "https://xg.swjtu.edu.cn/web", icon: "uil:university", desc: "" },
-                    { title: "土木学院", url: "https://civil.swjtu.edu.cn/tzgg.htm", icon: "mdi:construction", desc: "" }
-                ],
-                "工具": [
-                    { title: "在线工具箱", url: "https://tool.lu/", icon: "fluent-emoji:toolbox", desc: "" },
-                    { title: "菜鸟工具", url: "https://c.runoob.com/", icon: "simple-icons:runno", desc: "" },
-                    { title: "JSON格式化", url: "https://www.json.cn/", icon: "mdi:code-json", desc: "" },
-                    { title: "正则测试", url: "https://regex101.com/", icon: "mdi:regex", desc: "" },
-                    { title: "时间戳转换", url: "https://tool.lu/timestamp/", icon: "mdi:clock-outline", desc: "" },
-                    { title: "Base64编解码", url: "https://base64.us/", icon: "mdi:code-tags", desc: "" },
-                    { title: "二维码生成", url: "https://cli.im/", icon: "mdi:qrcode", desc: "" },
-                    { title: "图片压缩", url: "https://tinypng.com/", icon: "mdi:image-size-select-large", desc: "" },
-                    { title: "PDF转换", url: "https://www.ilovepdf.com/", icon: "mdi:file-pdf-box", desc: "" },
-                    { title: "短链生成", url: "https://dwz.cn/", icon: "mdi:link-variant", desc: "" }
-                ],
-                "服务": [
-                    { title: "Spaceship", url: "https://spaceship.com", icon: "stash:domain", desc: "" },
-                    { title: "核云", url: "https://www.heyunidc.cn/", icon: "mdi:server", desc: "" },
-                    { title: "云悠", url: "https://yunyoo.cc/", icon: "tabler:server", desc: "" },
-                    { title: "风尚云", url: "https://ly.stay33.com/", icon: "mingcute:server-line", desc: "" },
-                    { title: "ACCK", url: "https://acck.io/", icon: "boxicons:server-filled", desc: "" },
-                    { title: "Akile", url: "https://akile.ai/", icon: "mingcute:server-fill", desc: "" },
-                    { title: "Fuckip", url: "https://fuckip.me/", icon: "mingcute:server-line", desc: "" },
-                    { title: "ip查询", url: "https://ip.net.coffee/", icon: "mdi:ip", desc: "" },
-                    { title: "ITDog", url: "https://www.itdog.cn/", icon: "streamline-plump-color:web", desc: "" },
-                    { title: "scamalytics", url: "https://scamalytics.com/", icon: "arcticons:ip-tools", desc: "" }
-                ],
-                "视频资讯": [
-                    { title: "Google", url: "https://www.google.com/ncr", icon: "devicon:google", desc: "" },
-                    { title: "Bing", url: "https://www.bing.com/?cc=us", icon: "logos:bing", desc: "" },
-                    { title: "维基百科", url: "https://zh.wikipedia.org/", icon: "fontisto:wikipedia", desc: "" },
-                    { title: "Youtube", url: "https://www.youtube.com/", icon: "logos:youtube-icon", desc: "" },
-                    { title: "TikTok", url: "https://www.tiktok.com/", icon: "logos:tiktok-icon", desc: "" },
-                    { title: "Meta", url: "https://www.meta.com", icon: "logos:meta-icon", desc: "" },
-                    { title: "Instagram", url: "https://www.instagram.com/", icon: "skill-icons:instagram", desc: "" },
-                    { title: "BBC中文", url: "https://www.bbc.com/zhongwen/simp", icon: "cbi:bbc", desc: "" },
-                    { title: "纽约时报", url: "https://cn.nytimes.com/", icon: "tabler:brand-nytimes", desc: "" },
-                    { title: "CNN中国", url: "https://edition.cnn.com/world/china", icon: "simple-icons:cnn", desc: "" },
-                    { title: "TED", url: "https://www.ted.com", icon: "simple-icons:ted", desc: "" },
-                    { title: "Baidu", url: "https://www.baidu.com", icon: "ant-design:baidu-outlined", desc: "" },
-                    { title: "抖音", url: "https://www.douyin.com/", icon: "ic:twotone-tiktok", desc: "" },
-                    { title: "西瓜视频", url: "https://www.ixigua.com", icon: "icon-park-solid:xigua", desc: "" },
-                    { title: "知乎", url: "https://www.zhihu.com/", icon: "simple-icons:zhihu", desc: "" },
-                    { title: "Bilibili", url: "https://www.bilibili.com/", icon: "ant-design:bilibili-filled", desc: "" },
-                    { title: "豆瓣", url: "https://www.douban.com/", icon: "ri:douban-fill", desc: "" },
-                    { title: "CSDN", url: "https://blog.csdn.net/", icon: "noto-v1:file-cabinet", desc: "" },
-                    { title: "小宝影院", url: "https://xiaoxintv.cc/", icon: "material-symbols:movie", desc: "" },
-                    { title: "泥视频", url: "https://www.nivod.cc/", icon: "fluent-color:video-48", desc: "" },
-                    { title: "茶杯狐", url: "https://cupfox.love/", icon: "fluent-emoji-flat:teacup-without-handle", desc: "" }
-                ],
-                "服务应用": [
-                    { title: "谷歌翻译", url: "https://translate.google.com", icon: "marketeq:translate", desc: "" },
-                    { title: "反防火墙", url: "https://zh.greatfire.org", icon: "noto:free-button", desc: "" },
-                    { title: "Github", url: "https://github.com", icon: "mdi:github", desc: "" },
-                    { title: "GH 代理", url: "https://ghp.ci/", icon: "fa6-brands:github-alt", desc: "" },
-                    { title: "Gitee", url: "https://gitee.com/", icon: "simple-icons:gitee", desc: "" },
-                    { title: "Aliyun", url: "https://cn.aliyun.com", icon: "fluent-color:cloud-16", desc: "" },
-                    { title: "娃娃工具", url: "https://www.iamwawa.cn/", icon: "noto:toolbox", desc: "" },
-                    { title: "Tool.lu", url: "https://tool.lu", icon: "fluent-emoji:toolbox", desc: "" },
-                    { title: "Canva", url: "https://www.canva.com", icon: "devicon:canva", desc: "" },
-                    { title: "Pdf2MD", url: "https://pdf2md.morethan.io/", icon: "icon-park:file-pdf", desc: "" },
-                    { title: "Cpolar", url: "https://www.cpolar.com", icon: "icon-park:database-network-point", desc: "" },
-                    { title: "免费电视", url: "https://epg.pw/areas/cn.html?lang=zh-hans", icon: "material-symbols:tv", desc: "" },
-                    { title: "SMS-Activate", url: "https://sms-activate.io/", icon: "flat-color-icons:sms", desc: "" },
-                    { title: "WiFi Analyzer", url: "https://github.com/VREMSoftwareDevelopment/WiFiAnalyzer/releases", icon: "tabler:brand-github-filled", desc: "" }
-                ]
-            };
+            // 获取显示设置
+            function getDisplaySettings() {
+                const saved = localStorage.getItem('sunpanel_settings');
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+                return {
+                    iconSize: 'medium',  // small, medium, large
+                    showIcon: true,
+                    cardStyle: 'card'    // card, list
+                };
+            }
 
-            // 渲染网站分类
+            // 保存显示设置
+            function saveDisplaySettings(settings) {
+                localStorage.setItem('sunpanel_settings', JSON.stringify(settings));
+            }
+
+            // 获取图标尺寸配置
+            function getIconSizeConfig(size) {
+                const configs = {
+                    small: { wrapperSize: '32px', iconSize: '16', fontSize: 'text-xs' },
+                    medium: { wrapperSize: '48px', iconSize: '24', fontSize: 'text-xs' },
+                    large: { wrapperSize: '64px', iconSize: '32', fontSize: 'text-sm' }
+                };
+                return configs[size] || configs.medium;
+            }
+
+            // 渲染网站分类（使用 sites.js 中的数据）
             function renderSites() {
                 const mainContent = document.getElementById('mainContent');
                 if (!mainContent) return;
 
-                // 定义分类顺序：常用和工具放在前两位
-                const categoryOrder = ["常用", "工具", "服务","视频资讯", "服务应用"];
+                // 清空现有内容
+                mainContent.innerHTML = '';
+
+                const settings = getDisplaySettings();
+                const sizeConfig = getIconSizeConfig(settings.iconSize);
 
                 categoryOrder.forEach(categoryName => {
                     const sites = siteData[categoryName];
@@ -286,40 +293,59 @@
                     title.textContent = categoryName;
                     section.appendChild(title);
                     
-                    // 创建网站卡片网格
+                    // 根据样式创建网格
                     const grid = document.createElement('div');
-                    grid.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3';
+                    if (settings.cardStyle === 'list') {
+                        grid.className = 'flex flex-col gap-2';
+                    } else {
+                        grid.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3';
+                    }
                     
                     sites.forEach(site => {
                         const card = document.createElement('a');
                         card.href = site.url;
                         card.target = '_blank';
                         card.rel = 'noopener noreferrer';
-                        card.className = 'site-card p-3 flex flex-col items-center text-center group';
                         
-                        const iconWrapper = document.createElement('div');
-                        iconWrapper.className = 'icon-wrapper bg-gray-800 mb-2 group-hover:bg-gray-700 transition-colors';
-                        
-                        if (site.icon) {
-                            const icon = document.createElement('iconify-icon');
-                            icon.setAttribute('icon', site.icon);
-                            icon.setAttribute('width', '24');
-                            icon.setAttribute('height', '24');
-                            iconWrapper.appendChild(icon);
+                        // 根据样式设置卡片类名
+                        if (settings.cardStyle === 'list') {
+                            card.className = 'site-card p-3 flex items-center gap-3 group';
                         } else {
-                            const textIcon = document.createElement('span');
-                            textIcon.className = 'text-lg font-bold text-gray-400';
-                            textIcon.textContent = site.title.charAt(0).toUpperCase();
-                            iconWrapper.appendChild(textIcon);
+                            card.className = 'site-card p-3 flex flex-col items-center text-center group';
                         }
                         
-                        card.appendChild(iconWrapper);
+                        // 添加图标（如果启用）
+                        if (settings.showIcon) {
+                            const iconWrapper = document.createElement('div');
+                            iconWrapper.className = 'icon-wrapper bg-gray-800 group-hover:bg-gray-700 transition-colors flex items-center justify-center';
+                            iconWrapper.style.width = sizeConfig.wrapperSize;
+                            iconWrapper.style.height = sizeConfig.wrapperSize;
+                            iconWrapper.style.fontSize = sizeConfig.iconSize + 'px';
+                            iconWrapper.style.borderRadius = '10px';
+                            
+                            if (site.icon) {
+                                const icon = document.createElement('iconify-icon');
+                                icon.setAttribute('icon', site.icon);
+                                icon.setAttribute('width', sizeConfig.iconSize);
+                                icon.setAttribute('height', sizeConfig.iconSize);
+                                iconWrapper.appendChild(icon);
+                            } else {
+                                const textIcon = document.createElement('span');
+                                textIcon.className = 'font-bold text-gray-400';
+                                textIcon.textContent = site.title.charAt(0).toUpperCase();
+                                iconWrapper.appendChild(textIcon);
+                            }
+                            
+                            card.appendChild(iconWrapper);
+                        }
                         
+                        // 添加标题
                         const titleSpan = document.createElement('span');
-                        titleSpan.className = 'text-xs text-gray-200';
+                        titleSpan.className = sizeConfig.fontSize + ' text-gray-200';
                         titleSpan.textContent = site.title;
                         card.appendChild(titleSpan);
                         
+                        // 添加描述（如果有）
                         if (site.desc) {
                             const descSpan = document.createElement('span');
                             descSpan.className = 'text-xs text-gray-500 mt-1';
@@ -352,6 +378,105 @@
             document.addEventListener('DOMContentLoaded', function() {
                 // 渲染网站
                 renderSites();
+                
+                // 更新设置按钮状态
+                function updateSettingsButtons() {
+                    const settings = getDisplaySettings();
+                    
+                    // 更新图标大小按钮
+                    document.querySelectorAll('.size-btn').forEach(btn => {
+                        if (btn.dataset.size === settings.iconSize) {
+                            btn.classList.add('border-amber-500', 'bg-amber-500/20');
+                            btn.classList.remove('border-transparent');
+                        } else {
+                            btn.classList.remove('border-amber-500', 'bg-amber-500/20');
+                            btn.classList.add('border-transparent');
+                        }
+                    });
+                    
+                    // 更新显示图标按钮
+                    document.querySelectorAll('.icon-btn').forEach(btn => {
+                        if (btn.dataset.showicon === String(settings.showIcon)) {
+                            btn.classList.add('border-amber-500', 'bg-amber-500/20');
+                            btn.classList.remove('border-transparent');
+                        } else {
+                            btn.classList.remove('border-amber-500', 'bg-amber-500/20');
+                            btn.classList.add('border-transparent');
+                        }
+                    });
+                    
+                    // 更新卡片样式按钮
+                    document.querySelectorAll('.style-btn').forEach(btn => {
+                        if (btn.dataset.style === settings.cardStyle) {
+                            btn.classList.add('border-amber-500', 'bg-amber-500/20');
+                            btn.classList.remove('border-transparent');
+                        } else {
+                            btn.classList.remove('border-amber-500', 'bg-amber-500/20');
+                            btn.classList.add('border-transparent');
+                        }
+                    });
+                }
+                
+                // 设置面板相关
+                const settingsBtn = document.getElementById('settingsBtn');
+                const settingsPanel = document.getElementById('settingsPanel');
+                const closeSettings = document.getElementById('closeSettings');
+                
+                if (settingsBtn) {
+                    settingsBtn.addEventListener('click', function() {
+                        settingsPanel.classList.remove('hidden');
+                        updateSettingsButtons();
+                    });
+                }
+                
+                if (closeSettings) {
+                    closeSettings.addEventListener('click', function() {
+                        settingsPanel.classList.add('hidden');
+                    });
+                }
+                
+                // 图标大小切换
+                document.querySelectorAll('.size-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const settings = getDisplaySettings();
+                        settings.iconSize = this.dataset.size;
+                        saveDisplaySettings(settings);
+                        renderSites();
+                        updateSettingsButtons();
+                    });
+                });
+                
+                // 显示图标切换
+                document.querySelectorAll('.icon-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const settings = getDisplaySettings();
+                        settings.showIcon = this.dataset.showicon === 'true';
+                        saveDisplaySettings(settings);
+                        renderSites();
+                        updateSettingsButtons();
+                    });
+                });
+                
+                // 卡片样式切换
+                document.querySelectorAll('.style-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const settings = getDisplaySettings();
+                        settings.cardStyle = this.dataset.style;
+                        saveDisplaySettings(settings);
+                        renderSites();
+                        updateSettingsButtons();
+                    });
+                });
+                
+                // 重置设置
+                const resetSettingsBtn = document.getElementById('resetSettings');
+                if (resetSettingsBtn) {
+                    resetSettingsBtn.addEventListener('click', function() {
+                        localStorage.removeItem('sunpanel_settings');
+                        renderSites();
+                        updateSettingsButtons();
+                    });
+                }
                 
                 // 检测并显示设备类型
                 function isMobile() {
