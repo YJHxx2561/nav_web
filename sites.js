@@ -12,18 +12,18 @@ const siteData = {
         { title: "抖音", url: "https://www.douyin.com/?recommend=1", icon: "logos:tiktok-icon", desc: "" },
         { title: "哔哩哔哩", url: "https://www.bilibili.com/", icon: "ant-design:bilibili-filled", desc: "" },
         { title: "Youtube", url: "https://www.youtube.com/", icon: "logos:youtube-icon", desc: "" },
+        { title: "微博", url: "https://weibo.com/", icon: "simple-icons:weibo", desc: "" },
+        { title: "小红书", url: "https://xiaohongshu.com/", icon: "simple-icons:xiaohongshu", desc: "" },
         { title: "Gmail", url: "https://mail.google.com/mail/u/0/#inbox", icon: "logos:google-gmail", desc: "" },
         { title: "QQ邮箱", url: "https://wx.mail.qq.com/", icon: "fluent-color:mail-48", desc: "" },
         { title: "Outlook", url: "https://outlook.office.com/", icon: "fluent-color:mail-48", desc: "" },
         { title: "Lark邮箱", url: "https://gjpxlsii7pct.jp.larksuite.com/mail", icon: "fluent-color:mail-48", desc: "" },
         { title: "swjtu邮箱", url: "https://mail.swjtu.edu.cn/cmcuapi/sso/cas", icon: "pajamas:mail", desc: "" },
         { title: "Cloudflare", url: "https://dash.cloudflare.com/", icon: "logos:cloudflare-icon", desc: "" },
-        { title: "github", url: "https://github.com/", icon: "ri:github-fill", desc: "" },
-        { title: "MOOC", url: "https://www.icourse163.org/", icon: "arcticons:china-university-mooc", desc: "" },
-        { title: "学习通", url: "https://i.chaoxing.com/", icon: "noto:books", desc: "" },
-        { title: "教务处", url: "https://jwc.swjtu.edu.cn/index.html?version=2020", icon: "material-symbols:school", desc: "" },
-        { title: "扬华素质网", url: "https://xg.swjtu.edu.cn/web", icon: "uil:university", desc: "" },
-        { title: "土木学院", url: "https://civil.swjtu.edu.cn/tzgg.htm", icon: "mdi:construction", desc: "" }
+        { title: "GitHub", url: "https://github.com/", icon: "ri:github-fill", desc: "" },
+        { title: "百度网盘", url: "https://pan.baidu.com/", icon: "simple-icons:baidu", desc: "" },
+        { title: "阿里云盘", url: "https://www.alipan.com/", icon: "simple-icons:alibabacloud", desc: "" },
+        { title: "知乎", url: "https://www.zhihu.com/", icon: "simple-icons:zhihu", desc: "" }
     ],
     "工具": [
         { title: "在线工具箱", url: "https://tool.lu/", icon: "fluent-emoji:toolbox", desc: "" },
@@ -47,7 +47,26 @@ const siteData = {
         { title: "Fuckip", url: "https://fuckip.me/", icon: "mingcute:server-line", desc: "" },
         { title: "ip查询", url: "https://ip.net.coffee/", icon: "mdi:ip", desc: "" },
         { title: "ITDog", url: "https://www.itdog.cn/", icon: "streamline-plump-color:web", desc: "" },
-        { title: "scamalytics", url: "https://scamalytics.com/", icon: "arcticons:ip-tools", desc: "" }
+        { title: "scamalytics", url: "https://scamalytics.com/", icon: "arcticons:ip-tools", desc: "" },
+        {title: "短链生成", url: "https://dwz.cn/", icon: "mdi:link-variant", desc: "" },
+        { title: "Markdown编辑器", url: "https://dillinger.io/", icon: "simple-icons:markdown", desc: "" },
+        { title: "颜色选择器", url: "https://color.adobe.com/", icon: "mdi:palette", desc: "" }
+    ],
+    "开发": [
+        { title: "GitHub", url: "https://github.com/", icon: "ri:github-fill", desc: "" },
+        { title: "Gitee", url: "https://gitee.com/", icon: "simple-icons:gitee", desc: "" },
+        { title: "npm", url: "https://www.npmjs.com/", icon: "simple-icons:npm", desc: "" },
+        { title: "Stack Overflow", url: "https://stackoverflow.com/", icon: "simple-icons:stackoverflow", desc: "" },
+        { title: "Vercel", url: "https://vercel.com/", icon: "simple-icons:vercel", desc: "" },
+        { title: "Netlify", url: "https://www.netlify.com/", icon: "simple-icons:netlify", desc: "" },
+        { title: "Render", url: "https://render.com/", icon: "simple-icons:render", desc: "" },
+        { title: "MDN", url: "https://developer.mozilla.org/", icon: "simple-icons:mdnwebdocs", desc: "" },
+        { title: "Tailwind CSS", url: "https://tailwindcss.com/", icon: "simple-icons:tailwindcss", desc: "" },
+        { title: "Vite", url: "https://vitejs.dev/", icon: "simple-icons:vite", desc: "" },
+        { title: "React", url: "https://react.dev/", icon: "simple-icons:react", desc: "" },
+        { title: "Vue", url: "https://vuejs.org/", icon: "simple-icons:vue", desc: "" },
+        { title: "TypeScript", url: "https://www.typescriptlang.org/", icon: "simple-icons:typescript", desc: "" },
+        { title: "Node.js", url: "https://nodejs.org/", icon: "simple-icons:nodedotjs", desc: "" }
     ],
     "视频资讯": [
         { title: "Google", url: "https://www.google.com/ncr", icon: "devicon:google", desc: "" },
@@ -55,7 +74,6 @@ const siteData = {
         { title: "维基百科", url: "https://zh.wikipedia.org/", icon: "fontisto:wikipedia", desc: "" },
         { title: "Youtube", url: "https://www.youtube.com/", icon: "logos:youtube-icon", desc: "" },
         { title: "TikTok", url: "https://www.tiktok.com/", icon: "logos:tiktok-icon", desc: "" },
-        { title: "Meta", url: "https://www.meta.com", icon: "logos:meta-icon", desc: "" },
         { title: "Instagram", url: "https://www.instagram.com/", icon: "skill-icons:instagram", desc: "" },
         { title: "BBC中文", url: "https://www.bbc.com/zhongwen/simp", icon: "cbi:bbc", desc: "" },
         { title: "纽约时报", url: "https://cn.nytimes.com/", icon: "tabler:brand-nytimes", desc: "" },
@@ -64,31 +82,51 @@ const siteData = {
         { title: "Baidu", url: "https://www.baidu.com", icon: "ant-design:baidu-outlined", desc: "" },
         { title: "抖音", url: "https://www.douyin.com/", icon: "ic:twotone-tiktok", desc: "" },
         { title: "西瓜视频", url: "https://www.ixigua.com", icon: "icon-park-solid:xigua", desc: "" },
-        { title: "知乎", url: "https://www.zhihu.com/", icon: "simple-icons:zhihu", desc: "" },
-        { title: "Bilibili", url: "https://www.bilibili.com/", icon: "ant-design:bilibili-filled", desc: "" },
         { title: "豆瓣", url: "https://www.douban.com/", icon: "ri:douban-fill", desc: "" },
+        { title: "网易新闻", url: "https://news.163.com/", icon: "simple-icons:netease", desc: "" },
+        { title: "腾讯新闻", url: "https://news.qq.com/", icon: "simple-icons:tencent", desc: "" },
         { title: "CSDN", url: "https://blog.csdn.net/", icon: "noto-v1:file-cabinet", desc: "" },
-        { title: "小宝影院", url: "https://xiaoxintv.cc/", icon: "material-symbols:movie", desc: "" },
-        { title: "泥视频", url: "https://www.nivod.cc/", icon: "fluent-color:video-48", desc: "" },
-        { title: "茶杯狐", url: "https://cupfox.love/", icon: "fluent-emoji-flat:teacup-without-handle", desc: "" }
+        { title: "掘金", url: "https://juejin.cn/", icon: "simple-icons:juejin", desc: "" },
+        { title: "少数派", url: "https://sspai.com/", icon: "simple-icons:sspai", desc: "" }
     ],
-    "服务应用": [
+    "校园": [
+        { title: "教务处", url: "https://jwc.swjtu.edu.cn/index.html?version=2020", icon: "material-symbols:school", desc: "" },
+        { title: "扬华素质网", url: "https://xg.swjtu.edu.cn/web", icon: "uil:university", desc: "" },
+        { title: "土木学院", url: "https://civil.swjtu.edu.cn/tzgg.htm", icon: "mdi:construction", desc: "" },
+        { title: "学习通", url: "https://i.chaoxing.com/", icon: "noto:books", desc: "" },
+        { title: "MOOC", url: "https://www.icourse163.org/", icon: "arcticons:china-university-mooc", desc: "" },
+        { title: "swjtu邮箱", url: "https://mail.swjtu.edu.cn/cmcuapi/sso/cas", icon: "fluent-color:mail-48", desc: "" },
+        { title: "Lark邮箱", url: "https://gjpxlsii7pct.jp.larksuite.com/mail", icon: "fluent-color:mail-48", desc: "" }
+    ],
+    "办公教育": [
         { title: "谷歌翻译", url: "https://translate.google.com", icon: "marketeq:translate", desc: "" },
-        { title: "反防火墙", url: "https://zh.greatfire.org", icon: "noto:free-button", desc: "" },
-        { title: "Github", url: "https://github.com", icon: "mdi:github", desc: "" },
-        { title: "GH 代理", url: "https://ghp.ci/", icon: "fa6-brands:github-alt", desc: "" },
-        { title: "Gitee", url: "https://gitee.com/", icon: "simple-icons:gitee", desc: "" },
-        { title: "Aliyun", url: "https://cn.aliyun.com", icon: "fluent-color:cloud-16", desc: "" },
-        { title: "娃娃工具", url: "https://www.iamwawa.cn/", icon: "noto:toolbox", desc: "" },
-        { title: "Tool.lu", url: "https://tool.lu", icon: "fluent-emoji:toolbox", desc: "" },
+        { title: "钉钉", url: "https://www.dingtalk.com/", icon: "mdi:message-circle", desc: "" },
+        { title: "飞书", url: "https://www.feishu.cn/", icon: "mdi:rocket", desc: "" },
+        { title: "腾讯文档", url: "https://docs.qq.com/", icon: "simple-icons:tencent", desc: "" },
+        { title: "石墨文档", url: "https://shimo.im/", icon: "mdi:file-text", desc: "" },
+        { title: "Coursera", url: "https://www.coursera.org/", icon: "simple-icons:coursera", desc: "" },
         { title: "Canva", url: "https://www.canva.com", icon: "devicon:canva", desc: "" },
-        { title: "Pdf2MD", url: "https://pdf2md.morethan.io/", icon: "icon-park:file-pdf", desc: "" },
-        { title: "Cpolar", url: "https://www.cpolar.com", icon: "icon-park:database-network-point", desc: "" },
-        { title: "免费电视", url: "https://epg.pw/areas/cn.html?lang=zh-hans", icon: "material-symbols:tv", desc: "" },
-        { title: "SMS-Activate", url: "https://sms-activate.io/", icon: "flat-color-icons:sms", desc: "" },
-        { title: "WiFi Analyzer", url: "https://github.com/VREMSoftwareDevelopment/WiFiAnalyzer/releases", icon: "tabler:brand-github-filled", desc: "" }
+        { title: "Figma", url: "https://www.figma.com/", icon: "simple-icons:figma", desc: "" },
+        { title: "ProcessOn", url: "https://www.processon.com/", icon: "mdi:network", desc: "" },
+        { title: "阿里云", url: "https://cn.aliyun.com", icon: "fluent-color:cloud-16", desc: "" },
+        { title: "腾讯云", url: "https://cloud.tencent.com/", icon: "simple-icons:tencentcloud", desc: "" }
+    ],
+    "生活购物": [
+        { title: "拼多多", url: "https://www.pinduoduo.com/", icon: "simple-icons:pinduoduo", desc: "" },
+        { title: "淘宝", url: "https://www.taobao.com/", icon: "simple-icons:taobao", desc: "" },
+        { title: "京东", url: "https://www.jd.com/", icon: "simple-icons:jd", desc: "" },
+        { title: "美团", url: "https://www.meituan.com/", icon: "simple-icons:meituan", desc: "" },
+        { title: "饿了么", url: "https://www.ele.me/", icon: "simple-icons:eleme", desc: "" },
+        { title: "大众点评", url: "https://www.dianping.com/", icon: "mdi:star", desc: "" },
+        { title: "携程", url: "https://www.ctrip.com/", icon: "simple-icons:ctrip", desc: "" },
+        { title: "12306", url: "https://www.12306.cn/", icon: "mdi:train", desc: "" },
+        { title: "滴滴", url: "https://www.didichuxing.com/", icon: "mdi:car", desc: "" },
+        { title: "微信支付", url: "https://pay.weixin.qq.com/", icon: "simple-icons:wechat", desc: "" },
+        { title: "支付宝", url: "https://www.alipay.com/", icon: "simple-icons:alipay", desc: "" },
+        { title: "唯品会", url: "https://www.vip.com/", icon: "simple-icons:vipshop", desc: "" },
+        { title: "苏宁", url: "https://www.suning.com/", icon: "simple-icons:suning", desc: "" }
     ]
 };
 
 // 分类显示顺序
-const categoryOrder = ["常用", "工具", "服务", "视频资讯", "服务应用"];
+const categoryOrder = ["常用", "工具", "开发", "服务", "视频资讯", "校园", "办公教育", "生活购物"];
